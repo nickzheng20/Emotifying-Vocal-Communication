@@ -1,7 +1,7 @@
 # Emotifying-Vocal-Communication
 
 ## UW Madison - CS539 Project
-### Contributor: 
+### Contributors: 
 Kwan Man Cheng, Computer Science, Undergraduate
 
 Nick Engebretsen, Electrical Engineering, Undergraduate
