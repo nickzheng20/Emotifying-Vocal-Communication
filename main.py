@@ -13,7 +13,7 @@ import librosa
 def record_audio():
     global recording, is_recording
     fs = 44100 
-    duration = 3 
+    duration = 2
 
     if not is_recording:
         is_recording = True
