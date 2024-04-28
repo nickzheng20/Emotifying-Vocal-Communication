@@ -12,8 +12,8 @@ import librosa
 
 def record_audio():
     global recording, is_recording
-    fs = 44100  # Sampling rate
-    duration = 3  # Duration in seconds
+    fs = 44100 
+    duration = 3 
 
     if not is_recording:
         is_recording = True
@@ -79,7 +79,7 @@ def predict_emotion():
     img = img.resize((100, 100)) 
     img_photo = ImageTk.PhotoImage(img)
     image_label.config(image=img_photo)
-    image_label.image = img_photo  # 防止被垃圾回收
+    image_label.image = img_photo
     image_label.pack()
     return emotion
 
