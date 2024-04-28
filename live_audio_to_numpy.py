@@ -7,19 +7,22 @@ Original file is located at
     https://colab.research.google.com/drive/1I1HU6syXwUoyXGlIMSG5z47aFqNhD8bu
 """
 
-!pip install sounddevice
-!pip install PortAudio
+# !pip install sounddevice
+# !pip install PortAudio
 import sounddevice as sd
 import numpy as np
 import soundfile as sf
 import os
+import noisereduce as nr
 
-def record_audio(duration, fs=44100):
+def record_and_reduce_noise(duration, fs=44100):
     print(f"Recording for {duration} seconds...")
     recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='float64')
     sd.wait()
     print("Recording finished.")
-    return recording
+    print("Reducing noise...")
+    reduced_noise = nr.reduce_noise(y=recording[:, 0], sr=fs)
+    return reduced_noise
 
 def save_audio(recording, directory, filename):
     if not os.path.exists(directory):
@@ -37,13 +40,13 @@ def play_audio(audio, fs):
 
 duration = 4
 fs = 44100  # Sampling rate
-recorded_audio = record_audio(duration, fs)
+recorded_audio = record_and_reduce_noise(duration, fs)
 
 # Define the directory and filename on your C drive
-directory = r'C:\YourFolder'  # Make sure to replace 'YourFolder' with your specific folder
-filename = 'your_audio_file.wav'
+directory = r'Audios/'  # Make sure to replace 'YourFolder' with your specific folder
+filename = 'test_sound.wav'
 
-# save_audio(recorded_audio, directory, filename)
+save_audio(recorded_audio, directory, filename)
 play_audio(recorded_audio, fs)
 
 print(f"Recorded Audio Shape: {recorded_audio.shape}")
