@@ -15,40 +15,60 @@ import soundfile as sf
 import os
 import noisereduce as nr
 
-def record_and_reduce_noise(duration, fs=44100):
-    print(f"Recording for {duration} seconds...")
-    recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='float64')
-    sd.wait()
-    print("Recording finished.")
-    print("Reducing noise...")
-    reduced_noise = nr.reduce_noise(y=recording[:, 0], sr=fs)
-    return reduced_noise
+import tkinter as tk
+from tkinter import filedialog
 
-def save_audio(recording, directory, filename):
+def record_audio():
+    global recording, is_recording
+    fs = 44100  # Sampling rate
+    duration = 4  # Duration in seconds
+
+    if not is_recording:
+        is_recording = True
+        recording_button.config(text='Stop Recording')
+        recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='float64')
+        sd.wait()
+        recording = nr.reduce_noise(y=recording[:, 0], sr=fs)
+        is_recording = False
+        recording_button.config(text='Start Recording')
+        print("Recording finished. Noise reduced.")
+    else:
+        sd.stop()
+        is_recording = False
+        recording_button.config(text='Start Recording')
+
+
+def save_audio():
+    directory = 'Audios/'
     if not os.path.exists(directory):
         os.makedirs(directory)
+    filename = "test_sound.wav"
     file_path = os.path.join(directory, filename)
+    
     print(f"Saving recording to {file_path}...")
-    sf.write(file_path, recording, fs)
+    sf.write(file_path, recording, 44100)
     print("Recording saved.")
 
-def play_audio(audio, fs):
-    print("Playing audio...")
-    sd.play(audio, samplerate=fs)
-    sd.wait()
-    print("Playback finished.")
+def play_audio():
+    if recording is not None:
+        print("Playing audio...")
+        sd.play(recording, samplerate=44100)
+        sd.wait()
+        print("Playback finished.")
 
-duration = 4
-fs = 44100  # Sampling rate
-recorded_audio = record_and_reduce_noise(duration, fs)
+root = tk.Tk()
+root.title("Audio Recorder")
 
-# Define the directory and filename on your C drive
-directory = r'Audios/'  # Make sure to replace 'YourFolder' with your specific folder
-filename = 'test_sound.wav'
+recording = None
+is_recording = False
 
-save_audio(recorded_audio, directory, filename)
-play_audio(recorded_audio, fs)
+recording_button = tk.Button(root, text='Start Recording', command=record_audio)
+recording_button.pack(pady=20)
 
-print(f"Recorded Audio Shape: {recorded_audio.shape}")
-print("First 10 samples:\n", recorded_audio[:10])
+save_button = tk.Button(root, text='Save Recording', command=save_audio)
+save_button.pack(pady=20)
 
+play_button = tk.Button(root, text='Play Recording', command=play_audio)
+play_button.pack(pady=20)
+
+root.mainloop()
