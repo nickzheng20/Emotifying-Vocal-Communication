@@ -58,7 +58,7 @@ def play_audio():
 
 def predict_emotion():
     
-    model = load_model('Models\emotion_detection_mixed_LSTM_1.keras')
+    model = load_model('Models\emotion_detection_TESS_LSTM_1.keras')
 
     def extract_mfcc(filename):
         y, sr = librosa.load(filename, duration=3, offset=0.5)
@@ -66,13 +66,26 @@ def predict_emotion():
         return mfcc
 
     def predict(file):
-        result_map = ['angry', 'disgust', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
+        # TESS: 'angry', 'disgust', 'fear', 'happy', 'neutral', 'ps', 'sad'
+        result_map = ['angry', 'disgust', 'fearful', 'happy', 'neutral', 'surprised', 'sad']
+
+        # Mixed: 'angry', 'disgust', 'fearful', 'happy', 'neutral', 'sad', 'surprised'
+        # result_map = ['angry', 'disgust', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
+        
         mfcc = extract_mfcc(file)
         mfcc = np.expand_dims(mfcc, -1)
         y = model.predict(np.array([mfcc]))
         y = np.argmax(y, axis=1)[0]
         return result_map[y]
-    emotion = predict('Audios/test_sound.wav')
+    
+    
+    # filepath = 'Audios/test_sound.wav'
+    for file in os.listdir('Audios/'):
+        if file.endswith('.wav'):
+            filepath = f'Audios/{file}'
+            break
+    print(f"Predicting emotion for {filepath}...")
+    emotion = predict(filepath)
     print(f"Predicted emotion: {emotion}")
     image_path = f"Images/{emotion}.png" 
     img = Image.open(image_path)
