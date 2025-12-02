@@ -1,7 +1,7 @@
 # Emotifying-Vocal-Communication
 
 ## Contributors: 
-郑钧文/Junwen Zheng, Computer Science, UW-Madison
+Kwan Man Cheng, Computer Science, UW-Madison
 
 Nick Engebretsen, Electrical Engineering, UW-Madison
 
